@@ -89,27 +89,28 @@ app = FastAPI(
 )
 
 # CORS configuration — uses CORS_ORIGINS env var (default: "*")
-# In production set CORS_ORIGINS=https://your-frontend-domain.com
+cors_origins = settings.cors_origins_list if settings.cors_origins_list else ["*"]
+# In production set CORS_ORIGINS=https://passport-scraper-dashboard.vercel.app
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+# include routers
+app.include_router(endpoints.router, prefix="/api")
 @app.websocket("/api/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
             await websocket.receive_text()
-    except WebSocketDisconnect:
+    except:
         manager.disconnect(websocket)
 
-# Register endpoints router
-app.include_router(router)
+
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "service": "passport-scraper-api"}
+    return {"status": "ok"}
