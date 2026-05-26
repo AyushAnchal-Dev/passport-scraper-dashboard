@@ -1,0 +1,159 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6",
+    "name": "Passport Social Scraper API",
+    "description": "Endpoints for checking health, pulling scraper feeds with advanced NLP filters, retrieving dashboard statistics, and translating content.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Verify that the FastAPI backend server is alive."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Posts (All / Filters)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/posts?platform=twitter&category=Appointments&language=en&sentiment=negative&sort_by=created_at&clustered=true",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "platform",
+              "value": "twitter",
+              "description": "Filter by social media source (twitter, reddit, instagram, etc.)"
+            },
+            {
+              "key": "category",
+              "value": "Appointments",
+              "description": "Filter by NLP topic category (Application, Renewal, Appointments, Tatkal, Visa, Scams/Fraud, Travel Issues, News)"
+            },
+            {
+              "key": "language",
+              "value": "en",
+              "description": "Filter by detected post language (en, hi, etc.)"
+            },
+            {
+              "key": "sentiment",
+              "value": "negative",
+              "description": "Filter by NLP sentiment (positive, neutral, negative)"
+            },
+            {
+              "key": "search",
+              "value": "delhi",
+              "description": "Fuzzy keyword search on original content and summaries",
+              "disabled": true
+            },
+            {
+              "key": "sort_by",
+              "value": "created_at",
+              "description": "Sorting metric (created_at or engagement)"
+            },
+            {
+              "key": "clustered",
+              "value": "true",
+              "description": "True to group duplicate discussion cards via DBSCAN embeddings, False to return raw flat feeds"
+            }
+          ]
+        },
+        "description": "Retrieve scraped passport posts filtered by platform, category, language, sentiment, and search terms."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Dashboard Statistics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/stats",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "stats"
+          ]
+        },
+        "description": "Get category totals, platform breakdowns, sentiment counts, regional distribution, and top 20 trending keywords for the word cloud."
+      },
+      "response": []
+    },
+    {
+      "name": "Translate Post Content",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"post_id\": \"sim_c12345\",\n  \"target_language\": \"es\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/translate",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "translate"
+          ]
+        },
+        "description": "On-demand translation of a post's content and summary to one of 10 supported languages. Cache results."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
